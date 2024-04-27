@@ -5,22 +5,39 @@ from enum import Enum
 from typing import Union
 
 
-class Color(Enum):
+class CamelColor(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+    PURPLE = 4
+    YELLOW = 5
+    BLACK = 6
+    WHITE = 7
+
+class TicketColor(Enum):
     RED = 1
     GREEN = 2
     BLUE = 3
     PURPLE = 4
     YELLOW = 5
 
+class DiceColor(Enum):
+    RED = 1
+    GREEN = 2
+    BLUE = 3
+    PURPLE = 4
+    YELLOW = 5
+    GRAY = 6
 
 @dataclass
 class Ticket:
-    color: Color
+    color: TicketColor
     first_place_value: int
+
 
 @dataclass
 class Camel:
-    color: Color
+    color: CamelColor
     position: Union[int, 'Camel']
 
 
@@ -30,6 +47,9 @@ class Board:
     remaining_dice_colors: set
 
 
+def init_board():
+    camel_set = set(CamelColor)
+    print(camel_set)
 
-red_camel = Camel(color=Color.RED, position=4)
-green_camel = Camel(color=Color.GREEN, position=red_camel)
+
+init_board()
