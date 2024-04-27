@@ -1,7 +1,6 @@
 import random
 from dataclasses import dataclass
 from enum import Enum
-from typing import Union
 from collections import defaultdict
 
 
@@ -44,6 +43,16 @@ class Board:
     remaining_dice_colors: set
     camels_positions: defaultdict(list)
 
+    def __str__(self):
+        for key in self.tickets:
+            print(key)
+            print(self.tickets[key])
+        print()
+        print(self.remaining_dice_colors)
+        print()
+        print(self.camels_positions)
+        print()
+
 def single_die_roll():
     return random.randint(1, 3)
 
@@ -68,3 +77,16 @@ def init_board():
 
 board=init_board()
 print(board)
+
+def payout_given_roll(board, die_color, die_value, ticket_color):
+    pass
+
+
+def calculate_simple_payouts_for_choosing_red_ignoring_chaos(board):
+    total_payout = 0
+    remaining_dice_count = len(board.remaining_dice_colors)
+    for die_color in board.remaining_dice_colors:
+        for die_value in [1,2,3]:
+            total_payout += payout_given_roll(board, die_color, die_value,
+                                              ticket_color=TicketColor.RED)
+    return total_payout / remaining_dice_count * 3
