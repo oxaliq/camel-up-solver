@@ -40,8 +40,9 @@ class Camel:
 
 @dataclass
 class Board:
-    tickets: list[Ticket]
+    tickets: defaultdict(list[Ticket])
     remaining_dice_colors: set
+    camels_positions: defaultdict(list)
 
 def single_die_roll():
     return random.randint(1, 3)
@@ -53,9 +54,17 @@ def init_board():
         camel_color = camel_colors.pop()
         position = single_die_roll()
         camels_positions[position].append(Camel(color=camel_color))
-        print(camels_positions)
+
+    tickets=defaultdict(list[Ticket])
+    for ticket_color in TicketColor:
+        this_ticket_list = list()
+        for first_place_value in [5,3,2,2]:
+            this_ticket_list.append(Ticket(color=ticket_color, first_place_value=first_place_value))
+        tickets[ticket_color] = this_ticket_list
+
+    return Board(tickets, set(DiceColor), camels_positions)
 
 
 
-
-init_board()
+board=init_board()
+print(board)
