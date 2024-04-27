@@ -1,8 +1,8 @@
-
-
+import random
 from dataclasses import dataclass
 from enum import Enum
 from typing import Union
+from collections import defaultdict
 
 
 class CamelColor(Enum):
@@ -34,22 +34,28 @@ class Ticket:
     color: TicketColor
     first_place_value: int
 
-
 @dataclass
 class Camel:
     color: CamelColor
-    position: Union[int, 'Camel']
-
 
 @dataclass
 class Board:
     tickets: list[Ticket]
     remaining_dice_colors: set
 
+def single_die_roll():
+    return random.randint(1, 3)
 
 def init_board():
-    camel_set = set(CamelColor)
-    print(camel_set)
+    camels_positions = defaultdict(list)
+    camel_colors = set(TicketColor)
+    while camel_colors:
+        camel_color = camel_colors.pop()
+        position = single_die_roll()
+        camels_positions[position].append(Camel(color=camel_color))
+        print(camels_positions)
+
+
 
 
 init_board()
