@@ -76,10 +76,31 @@ def init_board():
 
 
 board=init_board()
-print(board)
 
 def payout_given_roll(board, die_color, die_value, ticket_color):
-    pass
+    # move the cames
+    camel_position=-1
+    index_to_move=-1
+    print(board.camels_positions)
+    print("")
+    for position, camels in board.camels_positions.items():
+        for i, camel in enumerate (camels):
+            if camel.color == die_color:
+                camel_position=position
+                index_to_move = i
+                break
+        if index_to_move >= 0:
+            break
+
+    camels_to_move=board.camels_positions[camel_position][index_to_move:]
+    camels_to_keep=board.camels_positions[camel_position][:index_to_move]
+    board.camels_positions[camel_position] = camels_to_keep
+    board.camels_positions[camel_position+die_value].extend(camels_to_move)
+
+    # calculate winner
+    print(board.camels_positions)
+
+    # return value of win
 
 
 def calculate_simple_payouts_for_choosing_red_ignoring_chaos(board):
@@ -90,3 +111,5 @@ def calculate_simple_payouts_for_choosing_red_ignoring_chaos(board):
             total_payout += payout_given_roll(board, die_color, die_value,
                                               ticket_color=TicketColor.RED)
     return total_payout / remaining_dice_count * 3
+
+payout_given_roll(board, DiceColor.RED, 3, TicketColor.RED)
