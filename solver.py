@@ -67,7 +67,7 @@ def init_board():
     tickets=defaultdict(list[Ticket])
     for ticket_color in TicketColor:
         this_ticket_list = list()
-        for first_place_value in [5,3,2,2]:
+        for first_place_value in [2, 2, 3, 5]:
             this_ticket_list.append(Ticket(color=ticket_color, first_place_value=first_place_value))
         tickets[ticket_color] = this_ticket_list
 
@@ -76,6 +76,10 @@ def init_board():
 
 
 board=init_board()
+
+
+def get_camels_in_order(camel_positions):
+    pass
 
 def payout_given_roll(board, die_color, die_value, ticket_color):
     # move the cames
@@ -96,12 +100,20 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
     camels_to_keep=board.camels_positions[camel_position][:index_to_move]
     board.camels_positions[camel_position] = camels_to_keep
     board.camels_positions[camel_position+die_value].extend(camels_to_move)
-
-    # calculate winner
     print(board.camels_positions)
 
-    # return value of win
-
+    # calculate winnings
+    total_winnings = 0
+    winner_position = max(board.camels_positions.keys())
+    camels_at_position = board.camels_positions[winner_position]
+    if not camels_at_position:
+        # still have to calculate second place winnings and later winnings
+        return 0
+    winner = camels_at_position[-1]
+    if winner.color == ticket_color:
+        # TODO handle case where there are no tickets left
+        ticket_value = board.tickets[ticket_color][-1].first_place_value
+        return ticket_value
 
 def calculate_simple_payouts_for_choosing_red_ignoring_chaos(board):
     total_payout = 0
@@ -112,4 +124,6 @@ def calculate_simple_payouts_for_choosing_red_ignoring_chaos(board):
                                               ticket_color=TicketColor.RED)
     return total_payout / remaining_dice_count * 3
 
-payout_given_roll(board, DiceColor.RED, 3, TicketColor.RED)
+payout = payout_given_roll(board, DiceColor.RED, 3, TicketColor.RED)
+print()
+print(f"payout={payout}")
