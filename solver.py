@@ -1,57 +1,8 @@
 import random
-from dataclasses import dataclass
-from enum import Enum
 from collections import defaultdict
 from itertools import chain
 
-class CamelColor(Enum):
-    RED = 1
-    GREEN = 2
-    BLUE = 3
-    PURPLE = 4
-    YELLOW = 5
-    BLACK = 6
-    WHITE = 7
-
-class TicketColor(Enum):
-    RED = 1
-    GREEN = 2
-    BLUE = 3
-    PURPLE = 4
-    YELLOW = 5
-
-class DiceColor(Enum):
-    RED = 1
-    GREEN = 2
-    BLUE = 3
-    PURPLE = 4
-    YELLOW = 5
-    GRAY = 6
-
-@dataclass
-class Ticket:
-    color: TicketColor
-    first_place_value: int
-
-@dataclass
-class Camel:
-    color: CamelColor
-
-@dataclass
-class Board:
-    tickets: defaultdict(list[Ticket])
-    remaining_dice_colors: set
-    track: list[list[Camel]]
-
-    def __str__(self):
-        for key in self.tickets:
-            print(key)
-            print(self.tickets[key])
-        print()
-        print(self.remaining_dice_colors)
-        print()
-        print(self.track)
-        print()
+from models import TicketColor, Camel, Ticket, DiceColor, Board
 
 
 def single_die_roll():
@@ -76,15 +27,12 @@ def init_board():
     return Board(tickets = tickets, remaining_dice_colors = set(DiceColor), track = track)
 
 
-
-board=init_board()
-
-
 def get_camels_in_order(camel_positions):
-    pass
+    return list(chain.from_iterable(camel_positions))
+
 
 def payout_given_roll(board, die_color, die_value, ticket_color):
-    # move the cames
+    # move the camels
     camel_position=-1
     index_to_move=-1
     print(board.track)
@@ -107,7 +55,7 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
     # calculate winnings
     total_winnings = 0
 
-    camels_in_order = list(chain.from_iterable(board.track))
+    camels_in_order = get_camels_in_order(board.track)
     print(camels_in_order)
     first_place = camels_in_order[-1]
     second_place = camels_in_order[-2]
@@ -133,6 +81,8 @@ def calculate_simple_payouts_for_choosing_red_ignoring_chaos(board):
                                               ticket_color=TicketColor.RED)
     return total_payout / remaining_dice_count * 3
 
+
+board=init_board()
 payout = payout_given_roll(board, DiceColor.RED, 3, TicketColor.RED)
 print()
 print(f"payout={payout}")
