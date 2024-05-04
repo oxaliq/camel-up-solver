@@ -2,7 +2,7 @@ import random
 from dataclasses import dataclass
 from enum import Enum
 from collections import defaultdict
-
+from itertools import chain
 
 class CamelColor(Enum):
     RED = 1
@@ -41,7 +41,7 @@ class Camel:
 class Board:
     tickets: defaultdict(list[Ticket])
     remaining_dice_colors: set
-    camels_positions: defaultdict(list)
+    track: list[list[Camel]]
 
     def __str__(self):
         for key in self.tickets:
@@ -50,19 +50,21 @@ class Board:
         print()
         print(self.remaining_dice_colors)
         print()
-        print(self.camels_positions)
+        print(self.track)
         print()
+
 
 def single_die_roll():
     return random.randint(1, 3)
 
 def init_board():
-    camels_positions = defaultdict(list)
+    track = [[] for _ in range(16)]
+
     camel_colors = set(TicketColor)
     while camel_colors:
         camel_color = camel_colors.pop()
         position = single_die_roll()
-        camels_positions[position].append(Camel(color=camel_color))
+        track[position].append(Camel(color=camel_color))
 
     tickets=defaultdict(list[Ticket])
     for ticket_color in TicketColor:
@@ -71,7 +73,7 @@ def init_board():
             this_ticket_list.append(Ticket(color=ticket_color, first_place_value=first_place_value))
         tickets[ticket_color] = this_ticket_list
 
-    return Board(tickets, set(DiceColor), camels_positions)
+    return Board(tickets = tickets, remaining_dice_colors = set(DiceColor), track = track)
 
 
 
@@ -85,9 +87,9 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
     # move the cames
     camel_position=-1
     index_to_move=-1
-    print(board.camels_positions)
+    print(board.track)
     print("")
-    for position, camels in board.camels_positions.items():
+    for position, camels in enumerate(board.track):
         for i, camel in enumerate (camels):
             if camel.color == die_color:
                 camel_position=position
@@ -96,24 +98,31 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
         if index_to_move >= 0:
             break
 
-    camels_to_move=board.camels_positions[camel_position][index_to_move:]
-    camels_to_keep=board.camels_positions[camel_position][:index_to_move]
-    board.camels_positions[camel_position] = camels_to_keep
-    board.camels_positions[camel_position+die_value].extend(camels_to_move)
-    print(board.camels_positions)
+    camels_to_move=board.track[camel_position][index_to_move:]
+    camels_to_keep=board.track[camel_position][:index_to_move]
+    board.track[camel_position] = camels_to_keep
+    board.track[camel_position+die_value].extend(camels_to_move)
+    print(board.track)
 
     # calculate winnings
     total_winnings = 0
-    winner_position = max(board.camels_positions.keys())
-    camels_at_position = board.camels_positions[winner_position]
-    if not camels_at_position:
-        # still have to calculate second place winnings and later winnings
-        return 0
-    winner = camels_at_position[-1]
-    if winner.color == ticket_color:
+
+    camels_in_order = list(chain.from_iterable(board.track))
+    print(camels_in_order)
+    first_place = camels_in_order[-1]
+    second_place = camels_in_order[-2]
+
+    print(first_place)
+    print(second_place)
+    # still have to calculate second place winnings and later winnings
+    match ticket_color:
+        case first_place.color:
         # TODO handle case where there are no tickets left
-        ticket_value = board.tickets[ticket_color][-1].first_place_value
-        return ticket_value
+            ticket_value = board.tickets[ticket_color][-1].first_place_value
+            return ticket_value
+        case second_place.color:
+            return 1
+        case _: return -1
 
 def calculate_simple_payouts_for_choosing_red_ignoring_chaos(board):
     total_payout = 0
