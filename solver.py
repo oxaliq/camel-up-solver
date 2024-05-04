@@ -35,8 +35,6 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
     # move the camels
     camel_position=-1
     index_to_move=-1
-    print(board.track)
-    print("")
     for position, camels in enumerate(board.track):
         for i, camel in enumerate (camels):
             if camel.color == die_color:
@@ -50,19 +48,12 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
     camels_to_keep=board.track[camel_position][:index_to_move]
     board.track[camel_position] = camels_to_keep
     board.track[camel_position+die_value].extend(camels_to_move)
-    print(board.track)
-
-    # calculate winnings
-    total_winnings = 0
 
     camels_in_order = get_camels_in_order(board.track)
     print(camels_in_order)
     first_place = camels_in_order[-1]
     second_place = camels_in_order[-2]
 
-    print(first_place)
-    print(second_place)
-    # still have to calculate second place winnings and later winnings
     match ticket_color:
         case first_place.color:
         # TODO handle case where there are no tickets left
