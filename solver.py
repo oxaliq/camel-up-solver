@@ -48,6 +48,7 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
         if index_to_move >= 0:
             break
 
+    print(index_to_move)
     camels_to_move = track_copy[camel_position][index_to_move:]
     camels_to_keep = track_copy[camel_position][:index_to_move]
     track_copy[camel_position] = camels_to_keep
@@ -82,16 +83,3 @@ def calculate_simple_payouts_ignoring_chaos(board, chosen_ticket_color):
 
 board = init_board()
 camels_in_order = get_camels_in_order(board.track)
-print(f"initial_board={camels_in_order}")
-
-payout = payout_given_roll(board, DiceColor.RED, 3, TicketColor.RED)
-print()
-print(f"payout={payout}")
-payout = calculate_simple_payouts_ignoring_chaos(board, TicketColor.RED)
-print(f"red_payout={payout}")
-payout = calculate_simple_payouts_ignoring_chaos(board, TicketColor.GREEN)
-print(f"green_payout={payout}")
-payout = calculate_simple_payouts_ignoring_chaos(board, TicketColor.BLUE)
-print(f"blue_payout={payout}")
-payout = calculate_simple_payouts_ignoring_chaos(board, TicketColor.YELLOW)
-print(f"yellow_payout={payout}")

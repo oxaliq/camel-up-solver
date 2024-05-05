@@ -6,9 +6,14 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Run 
+## Run Solver
 ```bash
 python3 solver.py
+```
+
+## Run Tests
+```bash
+pytest
 ```
 
 ## Format code
