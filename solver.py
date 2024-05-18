@@ -41,6 +41,10 @@ def init_board():
     )
 
 
+def copy_board(board):
+    return copy.deepcopy(board)
+
+
 def get_camels_in_order(camel_positions):
     return list(chain.from_iterable(camel_positions))
 
@@ -73,6 +77,17 @@ def make_camel_move_with_pyramid_ticket(board, die_color, die_value):
         track=track_copy,
         remaining_pyramid_tickets=board.remaining_pyramid_tickets - 1,
     )
+
+
+def take_betting_ticket_move(board, ticket_color):
+    """
+    take the top betting ticket for a given camel color
+
+    :return: (new_board, ticket)
+    """
+    result_board = copy_board(board)
+    ticket = result_board.tickets[ticket_color].pop()
+    return (result_board, ticket)
 
 
 def payout_given_roll(board, die_color, die_value, ticket_color):
