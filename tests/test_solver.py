@@ -4,6 +4,7 @@ from models import DiceColor, TicketColor, Board, Camel, CamelColor
 from solver import payout_given_roll
 import pytest
 
+
 def test_solver():
     total_payout = 0
     remaining_dice_colors = [DiceColor.RED, DiceColor.BLUE]
@@ -13,7 +14,7 @@ def test_solver():
     tickets = defaultdict(list)
     tickets[TicketColor.BLUE] = [2]
     track = [[] for _ in range(16)]
-    track[0] =[Camel(color=CamelColor.BLUE), Camel(color=CamelColor.RED)]
+    track[0] = [Camel(color=CamelColor.BLUE), Camel(color=CamelColor.RED)]
 
     board = Board(
         tickets=tickets, remaining_dice_colors=remaining_dice_colors, track=track
