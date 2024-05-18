@@ -54,11 +54,11 @@ def make_camel_move_with_pyramid_ticket(board, die_color, die_value):
 
     :return: a copy of the board w/ the new state
     """
-    track_copy = copy.deepcopy(board.track)
+    new_board = copy_board(board)
     # move the camels
     camel_position = -1
     index_to_move = -1
-    for position, camels in enumerate(track_copy):
+    for position, camels in enumerate(new_board.track):
         for i, camel in enumerate(camels):
             if camel.color == die_color:
                 camel_position = position
@@ -67,16 +67,11 @@ def make_camel_move_with_pyramid_ticket(board, die_color, die_value):
         if index_to_move >= 0:
             break
 
-    camels_to_move = track_copy[camel_position][index_to_move:]
-    camels_to_keep = track_copy[camel_position][:index_to_move]
-    track_copy[camel_position] = camels_to_keep
-    track_copy[camel_position + die_value].extend(camels_to_move)
-    return Board(
-        tickets=copy.deepcopy(board.tickets),
-        remaining_dice_colors=board.remaining_dice_colors.copy(),
-        track=track_copy,
-        remaining_pyramid_tickets=board.remaining_pyramid_tickets - 1,
-    )
+    camels_to_move = new_board.track[camel_position][index_to_move:]
+    camels_to_keep = new_board.track[camel_position][:index_to_move]
+    new_board.track[camel_position] = camels_to_keep
+    new_board.track[camel_position + die_value].extend(camels_to_move)
+    return new_board
 
 
 def take_betting_ticket_move(board, ticket_color):

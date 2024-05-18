@@ -33,11 +33,11 @@ def test_solver():
 def test_take_betting_ticket_move():
     board = init_board()
 
-    test_cases = [[TicketColor.RED,5], [TicketColor.RED,3], [TicketColor.GREEN,5]]
+    test_cases = [[TicketColor.RED, 5], [TicketColor.RED, 3], [TicketColor.GREEN, 5]]
 
     for test_case in test_cases:
         ticket_color = test_case[0]
         expected_value = test_case[1]
 
         board, result_ticket = take_betting_ticket_move(board, ticket_color)
-        assert(result_ticket.first_place_value == expected_value)
+        assert result_ticket.first_place_value == expected_value
