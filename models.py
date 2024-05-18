@@ -46,6 +46,7 @@ class Board:
     tickets: defaultdict(list[Ticket])
     remaining_dice_colors: set
     track: list[list[Camel]]
+    remaining_pyramid_tickets: int
 
     def __str__(self):
         for key in self.tickets:

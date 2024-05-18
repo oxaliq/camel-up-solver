@@ -5,12 +5,18 @@ from itertools import chain
 from models import TicketColor, Camel, Ticket, DiceColor, Board
 
 
+DIE_VALUES = [1, 2, 3]
+FIRST_PLACE_TICKET_VALUES = [2, 2, 3, 5]
+TRACK_LENGTH = 16
+STARTING_PYRAMID_TICKETS = 5
+
+
 def single_die_roll():
     return random.randint(1, 3)
 
 
 def init_board():
-    track = [[] for _ in range(16)]
+    track = [[] for _ in range(TRACK_LENGTH)]
 
     camel_colors = set(TicketColor)
     while camel_colors:
@@ -21,13 +27,18 @@ def init_board():
     tickets = defaultdict(list[Ticket])
     for ticket_color in TicketColor:
         this_ticket_list = list()
-        for first_place_value in [2, 2, 3, 5]:
+        for first_place_value in FIRST_PLACE_TICKET_VALUES:
             this_ticket_list.append(
                 Ticket(color=ticket_color, first_place_value=first_place_value)
             )
         tickets[ticket_color] = this_ticket_list
 
-    return Board(tickets=tickets, remaining_dice_colors=set(DiceColor), track=track)
+    return Board(
+        tickets=tickets,
+        remaining_dice_colors=set(DiceColor),
+        track=track,
+        remaining_pyramid_tickets=STARTING_PYRAMID_TICKETS,
+    )
 
 
 def get_camels_in_order(camel_positions):
@@ -74,7 +85,7 @@ def calculate_simple_payouts_ignoring_chaos(board, chosen_ticket_color):
     total_payout = 0
     remaining_dice_count = len(board.remaining_dice_colors)
     for die_color in board.remaining_dice_colors:
-        for die_value in [1, 2, 3]:
+        for die_value in DIE_VALUES:
             total_payout += payout_given_roll(
                 board, die_color, die_value, ticket_color=chosen_ticket_color
             )

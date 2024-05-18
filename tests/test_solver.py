@@ -17,7 +17,10 @@ def test_solver():
     track[0] = [Camel(color=CamelColor.BLUE), Camel(color=CamelColor.RED)]
 
     board = Board(
-        tickets=tickets, remaining_dice_colors=remaining_dice_colors, track=track
+        tickets=tickets,
+        remaining_dice_colors=remaining_dice_colors,
+        track=track,
+        remaining_pyramid_tickets=1,
     )
 
     for die_color in remaining_dice_colors:
