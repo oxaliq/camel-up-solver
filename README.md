@@ -1,6 +1,6 @@
 # camel up solver!
 
-## Install 
+## Install
 ```bash
 python3.10 -m venv venv
 source venv/bin/activate
@@ -16,8 +16,14 @@ python3 solver.py
 ```bash
 pytest
 ```
+```sh
+python3 -m pytest
+```
 
 ## Format code
 ```bash
 black .
+```
+```sh
+python3 -m black .
 ```
