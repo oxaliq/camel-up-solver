@@ -12,8 +12,8 @@ def test_solver():
     ticket_color = TicketColor.BLUE
     tickets = defaultdict(list)
     tickets[TicketColor.BLUE] = [2]
-    track = list()
-    track.append([Camel(color=CamelColor.BLUE), Camel(color=CamelColor.RED)])
+    track = [[] for _ in range(16)]
+    track[0] =[Camel(color=CamelColor.BLUE), Camel(color=CamelColor.RED)]
 
     board = Board(
         tickets=tickets, remaining_dice_colors=remaining_dice_colors, track=track
@@ -21,7 +21,6 @@ def test_solver():
 
     for die_color in remaining_dice_colors:
         for die_value in [3]:
-            with pytest.raises(Exception):
-                total_payout += payout_given_roll(
-                    board, die_color, die_value, ticket_color=ticket_color
-                )
+            total_payout += payout_given_roll(
+                board, die_color, die_value, ticket_color=ticket_color
+            )
