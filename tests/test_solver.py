@@ -2,7 +2,6 @@ from collections import defaultdict
 
 from models import DiceColor, TicketColor, Board, Camel, CamelColor
 from solver import payout_given_roll
-import pytest
 
 
 def test_solver():

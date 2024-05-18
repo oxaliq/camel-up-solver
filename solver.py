@@ -1,7 +1,7 @@
 import random
 from collections import defaultdict
 from itertools import chain
-
+import copy
 from models import TicketColor, Camel, Ticket, DiceColor, Board
 
 
@@ -45,8 +45,12 @@ def get_camels_in_order(camel_positions):
     return list(chain.from_iterable(camel_positions))
 
 
-def payout_given_roll(board, die_color, die_value, ticket_color):
-    track_copy = board.track[:]
+def make_camel_move_with_pyramid_ticket(board, die_color, die_value):
+    """
+
+    :return: a copy of the board w/ the new state
+    """
+    track_copy = copy.deepcopy(board.track)
     # move the camels
     camel_position = -1
     index_to_move = -1
@@ -59,13 +63,21 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
         if index_to_move >= 0:
             break
 
-    print(index_to_move)
     camels_to_move = track_copy[camel_position][index_to_move:]
     camels_to_keep = track_copy[camel_position][:index_to_move]
     track_copy[camel_position] = camels_to_keep
     track_copy[camel_position + die_value].extend(camels_to_move)
+    return Board(
+        tickets=copy.deepcopy(board.tickets),
+        remaining_dice_colors=board.remaining_dice_colors.copy(),
+        track=track_copy,
+        remaining_pyramid_tickets=board.remaining_pyramid_tickets - 1,
+    )
 
-    camels_in_order = get_camels_in_order(track_copy)
+
+def payout_given_roll(board, die_color, die_value, ticket_color):
+    new_board = make_camel_move_with_pyramid_ticket(board, die_color, die_value)
+    camels_in_order = get_camels_in_order(new_board.track)
     # print(camels_in_order)
     first_place = camels_in_order[-1]
     second_place = camels_in_order[-2]
@@ -73,7 +85,7 @@ def payout_given_roll(board, die_color, die_value, ticket_color):
     match ticket_color:
         case first_place.color:
             # TODO handle case where there are no tickets left
-            ticket_value = board.tickets[ticket_color][-1].first_place_value
+            ticket_value = new_board.tickets[ticket_color][-1].first_place_value
             return ticket_value
         case second_place.color:
             return 1
