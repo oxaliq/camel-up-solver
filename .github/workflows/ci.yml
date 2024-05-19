@@ -1,6 +1,6 @@
-# This workflow will install Python dependencies and run black format checker
+# Installs dependencies, runs tests, checks format with black and lint with flake8
 
-name: Black
+name: CI
 
 on:
   push:
@@ -26,6 +26,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Check format with black
+    - name: pytest
+      run: |
+        pytest
+    - name: black format check
+      run: |
+        black .
+    - name: flake8 lint check
       run: |
         black .

@@ -2,13 +2,11 @@ from collections import defaultdict
 
 from models import DiceColor, TicketColor, Board, Camel, CamelColor
 from solver import init_board, take_betting_ticket_move, payout_given_roll
-import pytest
 
 
 def test_solver():
     total_payout = 0
     remaining_dice_colors = [DiceColor.RED, DiceColor.BLUE]
-    remaining_dice_count = len(remaining_dice_colors)
 
     ticket_color = TicketColor.BLUE
     tickets = defaultdict(list)
