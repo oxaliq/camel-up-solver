@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 from models import DiceColor, TicketColor, Board, Camel, CamelColor
-from solver import init_board, take_betting_ticket_move, payout_given_roll
+from solver import init_random_board, take_betting_ticket_move, payout_given_roll
 
 
 def test_solver():
@@ -29,13 +29,15 @@ def test_solver():
 
 
 def test_take_betting_ticket_move():
-    board = init_board()
-
-    test_cases = [[TicketColor.RED, 5], [TicketColor.RED, 3], [TicketColor.GREEN, 5]]
-
+    board = init_random_board()
+    test_cases = [
+        [TicketColor.RED, 5],
+        [TicketColor.RED, 3],
+        [TicketColor.RED, 2],
+        [TicketColor.RED, 2],
+        [TicketColor.GREEN, 5],
+    ]
     for test_case in test_cases:
-        ticket_color = test_case[0]
-        expected_value = test_case[1]
-
+        ticket_color, expected_value = test_case
         board, result_ticket = take_betting_ticket_move(board, ticket_color)
         assert result_ticket.first_place_value == expected_value

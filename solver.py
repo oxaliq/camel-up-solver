@@ -15,7 +15,7 @@ def single_die_roll():
     return random.randint(1, 3)
 
 
-def init_board():
+def init_random_board():
     track = [[] for _ in range(TRACK_LENGTH)]
 
     camel_colors = set(TicketColor)
@@ -114,5 +114,5 @@ def calculate_simple_payouts_ignoring_chaos(board, chosen_ticket_color):
     return total_payout / remaining_dice_count * 3
 
 
-board = init_board()
+board = init_random_board()
 camels_in_order = get_camels_in_order(board.track)
