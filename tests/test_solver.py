@@ -1,7 +1,8 @@
 from collections import defaultdict
 
-from models import DiceColor, TicketColor, Board, Camel, CamelColor
-from solver import init_random_board, take_betting_ticket_move, payout_given_roll
+from models import DiceColor, TicketColor, Board, Camel, CamelColor, DieRoll
+from solver import init_random_board, take_betting_ticket_move, payout_given_roll, init_known_board, \
+    get_camels_in_order
 
 
 def test_solver():
@@ -41,3 +42,16 @@ def test_take_betting_ticket_move():
         ticket_color, expected_value = test_case
         board, result_ticket = take_betting_ticket_move(board, ticket_color)
         assert result_ticket.first_place_value == expected_value
+
+
+def test_get_highest_probability_bet_from_known_board():
+    game_history = [
+        DieRoll(color=DiceColor.RED, value=3, print_color=None),
+        DieRoll(color=DiceColor.YELLOW, value=1, print_color=None),
+        DieRoll(color=DiceColor.GREEN, value=2, print_color=None),
+        DieRoll(color=DiceColor.BLUE, value=2, print_color=None),
+        DieRoll(color=DiceColor.PURPLE, value=2, print_color=None),
+    ]
+    board = init_known_board(game_history)
+    camels = get_camels_in_order(board.track)
+    pass

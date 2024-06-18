@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from collections import defaultdict
+from typing import Optional
 
 
 class CamelColor(Enum):
@@ -28,6 +29,28 @@ class DiceColor(Enum):
     PURPLE = 4
     YELLOW = 5
     GRAY = 6
+
+
+class DiePrintColor(Enum):
+    WHITE = 1
+    BLACK = 2
+
+
+@dataclass
+class Move:
+    pass
+
+
+@dataclass
+class DieRoll(Move):
+    color: DiceColor
+    value: int  # TODO: set range 1-3
+    print_color: Optional[DiePrintColor]
+
+
+@dataclass
+class TicketTake(Move):
+    color: TicketColor
 
 
 @dataclass

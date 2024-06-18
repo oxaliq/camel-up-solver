@@ -2,17 +2,56 @@ import random
 from collections import defaultdict
 from itertools import chain
 import copy
-from models import TicketColor, Camel, Ticket, DiceColor, Board
+from models import TicketColor, Camel, Ticket, DiceColor, Board, Move
+from typing import List
 
 
 DIE_VALUES = [1, 2, 3]
 FIRST_PLACE_TICKET_VALUES = [2, 2, 3, 5]
 TRACK_LENGTH = 16
-STARTING_PYRAMID_TICKETS = 5
+STARTING_PYRAMID_TICKET_COUNT = 5
 
 
 def single_die_roll():
     return random.randint(1, 3)
+
+
+def init_known_board(game_history: List[Move]):
+    track = [[] for _ in range(TRACK_LENGTH)]
+    camel_colors = set(TicketColor)
+    tickets = defaultdict(list[Ticket])
+    for ticket_color in TicketColor:
+        this_ticket_list = list()
+        for first_place_value in FIRST_PLACE_TICKET_VALUES:
+            this_ticket_list.append(
+                Ticket(color=ticket_color, first_place_value=first_place_value)
+            )
+        tickets[ticket_color] = this_ticket_list
+
+    board = Board(
+        tickets=tickets,
+        remaining_dice_colors=set(DiceColor),
+        track=track,
+        remaining_pyramid_tickets=STARTING_PYRAMID_TICKET_COUNT,
+    )
+
+    # set initial camels at 0
+
+    for move in game_history:
+        match type(move).__name__:
+            case 'DieRoll':
+                camel_color, die_value = move.print_color or move.color, move.value
+                # TODO: Fix die color
+                board = make_camel_move_with_pyramid_ticket(
+                    board=board, die_color=camel_color, die_value=die_value
+                )
+                pass
+            case 'TicketTake':
+                board = take_betting_ticket_move(board=board, ticket_color=move.color)
+            case _:
+                raise Exception
+
+    return board
 
 
 def init_random_board():
@@ -37,7 +76,7 @@ def init_random_board():
         tickets=tickets,
         remaining_dice_colors=set(DiceColor),
         track=track,
-        remaining_pyramid_tickets=STARTING_PYRAMID_TICKETS,
+        remaining_pyramid_tickets=STARTING_PYRAMID_TICKET_COUNT,
     )
 
 
@@ -45,8 +84,8 @@ def copy_board(board):
     return copy.deepcopy(board)
 
 
-def get_camels_in_order(camel_positions):
-    return list(chain.from_iterable(camel_positions))
+def get_camels_in_order(board_track):
+    return list(chain.from_iterable(board_track))
 
 
 def make_camel_move_with_pyramid_ticket(board, die_color, die_value):
@@ -56,6 +95,7 @@ def make_camel_move_with_pyramid_ticket(board, die_color, die_value):
     """
     new_board = copy_board(board)
     # move the camels
+    # TODO there is a bug here, camcel should start where it starts
     camel_position = -1
     index_to_move = -1
     for position, camels in enumerate(new_board.track):
