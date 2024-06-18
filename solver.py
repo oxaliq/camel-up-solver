@@ -47,7 +47,6 @@ def init_known_board(game_history: List[Move]):
                     camel_color=camel_color,
                     die_value=die_value,
                 )
-                pass
             case "TicketTake":
                 board = take_betting_ticket_move(board=board, ticket_color=move.color)
             case _:

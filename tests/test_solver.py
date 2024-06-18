@@ -60,4 +60,13 @@ def test_get_highest_probability_bet_from_known_board():
     board = init_known_board(game_history)
     camels = get_camels_in_order(board.track)
     print(camels)
-    pass
+
+    expected_camel_colors = [
+        DiceColor.YELLOW,
+        DiceColor.GREEN,
+        DiceColor.BLUE,
+        DiceColor.PURPLE,
+        DiceColor.RED,
+    ]
+    for i, camel in enumerate(camels):
+        assert camel.color == expected_camel_colors[i]
