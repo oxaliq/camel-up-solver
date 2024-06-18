@@ -39,14 +39,16 @@ def init_known_board(game_history: List[Move]):
 
     for move in game_history:
         match type(move).__name__:
-            case 'DieRoll':
+            case "DieRoll":
                 camel_color, die_value = move.print_color or move.color, move.value
-                # TODO: Fix die color
                 board = make_camel_move_with_pyramid_ticket(
-                    board=board, die_color=camel_color, die_value=die_value
+                    board=board,
+                    die_color=move.color,
+                    camel_color=camel_color,
+                    die_value=die_value,
                 )
                 pass
-            case 'TicketTake':
+            case "TicketTake":
                 board = take_betting_ticket_move(board=board, ticket_color=move.color)
             case _:
                 raise Exception
@@ -88,24 +90,31 @@ def get_camels_in_order(board_track):
     return list(chain.from_iterable(board_track))
 
 
-def make_camel_move_with_pyramid_ticket(board, die_color, die_value):
+def make_camel_move_with_pyramid_ticket(board, camel_color, die_color, die_value):
     """
 
     :return: a copy of the board w/ the new state
     """
     new_board = copy_board(board)
     # move the camels
-    # TODO there is a bug here, camcel should start where it starts
     camel_position = -1
     index_to_move = -1
     for position, camels in enumerate(new_board.track):
         for i, camel in enumerate(camels):
-            if camel.color == die_color:
+            if camel.color == camel_color:
                 camel_position = position
                 index_to_move = i
                 break
         if index_to_move >= 0:
             break
+
+    new_board.remaining_dice_colors.remove(die_color)
+    new_board.remaining_pyramid_tickets -= 1
+
+    # special case, if camel has not been placed on board yet
+    if index_to_move == -1:
+        new_board.track[index_to_move + die_value].append(Camel(color=camel_color))
+        return new_board
 
     camels_to_move = new_board.track[camel_position][index_to_move:]
     camels_to_keep = new_board.track[camel_position][:index_to_move]
@@ -126,7 +135,11 @@ def take_betting_ticket_move(board, ticket_color):
 
 
 def payout_given_roll(board, die_color, die_value, ticket_color):
-    new_board = make_camel_move_with_pyramid_ticket(board, die_color, die_value)
+    # TODO does not handle gray die
+    camel_color = die_color
+    new_board = make_camel_move_with_pyramid_ticket(
+        board, camel_color, die_color, die_value
+    )
     camels_in_order = get_camels_in_order(new_board.track)
     # print(camels_in_order)
     first_place = camels_in_order[-1]
